@@ -12,12 +12,12 @@ export default class Controller {
     });
 
     this.view.consultarBtn.addEventListener('click', async () => {
-      const fechaISO = this.view.fechaInput.value;
-      const fechaFormateada = this.view.formatearFecha(fechaISO);
-      const signo = this.model.getSigno(fechaFormateada);
-      const emoji = this.model.getEmoji(signo);
-      
       try {
+        const fechaISO = this.view.fechaInput.value;
+        const fechaFormateada = this.view.formatearFecha(fechaISO);
+        const signo = this.model.getSigno(fechaFormateada);
+        const emoji = this.model.getEmoji(signo);
+        
         const horoscopo = await this.model.getHoroscopo(signo);
         this.view.mostrarHoroscopo(horoscopo, emoji);
 
@@ -27,8 +27,16 @@ export default class Controller {
           });
         }, 15000);
       } catch (error) {
-        console.error(error);
-        this.view.mostrarHoroscopo("Error al obtener el horóscopo", "⚠️");
+        console.error('Error:', error);
+        this.view.mostrarHoroscopo(
+          "Ha ocurrido un error al consultar tu horóscopo. Por favor, intenta nuevamente.", 
+          "⚠️"
+        );
+        setTimeout(() => {
+          this.view.ocultarHoroscopo(() => {
+            this.view.habilitarBoton();
+          });
+        }, 3000);
       }
     });
   }

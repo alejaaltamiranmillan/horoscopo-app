@@ -18,8 +18,18 @@ export default class Model {
   }
 
   getSigno(fecha) {
+    // Validar el formato de fecha
+    if (!fecha || fecha.split('-').length !== 3) {
+      throw new Error('Formato de fecha inválido');
+    }
+
     const [day, month] = fecha.split('-').map(Number);
     
+    // Validar día y mes
+    if (isNaN(day) || isNaN(month) || day < 1 || day > 31 || month < 1 || month > 12) {
+      throw new Error('Fecha inválida');
+    }
+
     if ((month === 3 && day >= 21) || (month === 4 && day <= 19)) return 'aries';
     if ((month === 4 && day >= 20) || (month === 5 && day <= 20)) return 'tauro';
     if ((month === 5 && day >= 21) || (month === 6 && day <= 20)) return 'geminis';
@@ -40,7 +50,15 @@ export default class Model {
 
   async getHoroscopo(signo) {
     try {
-      const url = `${this.API_URL}?sign=${signo}`;
+      // Normalizar el signo antes de enviarlo
+      const signoNormalizado = signo.toLowerCase().trim();
+      
+      // Verificar que el signo sea válido
+      if (!this.ZODIAC_SIGNS[signoNormalizado]) {
+        throw new Error('Signo zodiacal no válido');
+      }
+
+      const url = `${this.API_URL}?sign=${signoNormalizado}`;
       const response = await fetch(url, {
         mode: "cors",
         cache: "no-store",
