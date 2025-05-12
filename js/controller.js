@@ -16,10 +16,10 @@ export default class Controller {
         const fechaISO = this.view.fechaInput.value;
         const fechaFormateada = this.view.formatearFecha(fechaISO);
         const signo = this.model.getSigno(fechaFormateada);
-        const emoji = this.model.getEmoji(signo);
+        const emoji = this.model.ZODIAC_SIGNS[signo]; // Acceso directo al emoji
         
-        const horoscopo = await this.model.getHoroscopo(signo);
-        this.view.mostrarHoroscopo(horoscopo, emoji);
+        const horoscopo = await this.model.getHoroscopo(fechaFormateada);
+        this.view.mostrarHoroscopo(horoscopo.horoscope, emoji);
 
         setTimeout(() => {
           this.view.ocultarHoroscopo(() => {
