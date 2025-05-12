@@ -11,19 +11,24 @@ export default class Controller {
       this.view.consultarBtn.disabled = !fechaValida;
     });
 
-    this.view.consultarBtn.addEventListener('click', () => {
+    this.view.consultarBtn.addEventListener('click', async () => {
       const fecha = this.view.fechaInput.value;
       const signo = this.model.getSigno(fecha);
-      const horoscopo = this.model.getHoroscopo(signo);
-      const emoji = this.getEmoji(signo);
-      this.view.mostrarHoroscopo(horoscopo, emoji);
+      const emoji = this.model.getEmoji(signo);
+      
+      try {
+        const horoscopo = await this.model.getHoroscopo(signo);
+        this.view.mostrarHoroscopo(horoscopo, emoji);
 
-      setTimeout(() => {
-        this.view.ocultarHoroscopo(() => {
-          this.view.habilitarBoton();
-        });
-      }, 15000);
+        setTimeout(() => {
+          this.view.ocultarHoroscopo(() => {
+            this.view.habilitarBoton();
+          });
+        }, 15000);
+      } catch (error) {
+        console.error(error);
+        this.view.mostrarHoroscopo("Error al obtener el horóscopo", "⚠️");
+      }
     });
   }
-
 }
