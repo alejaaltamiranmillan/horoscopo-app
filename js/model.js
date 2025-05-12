@@ -15,6 +15,17 @@ export default class Model {
       'acuario': '💡',
       'piscis': '🌊'
     };
+
+    // Normalizar las claves del objeto ZODIAC_SIGNS
+    this.ZODIAC_SIGNS = Object.fromEntries(
+      Object.entries(this.ZODIAC_SIGNS).map(([key, value]) => [
+        key.toLowerCase()
+          .trim()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, ""),
+        value
+      ])
+    );
   }
 
   getSigno(fecha) {
@@ -50,21 +61,34 @@ export default class Model {
 
   async getHoroscopo(signo) {
     try {
-      // Normalizar el signo antes de enviarlo
-      const signoNormalizado = signo.toLowerCase().trim();
+      // Normalizar el signo y remover tildes
+      const signoNormalizado = signo.toLowerCase()
+        .trim()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
       
       // Verificar que el signo sea válido
       if (!this.ZODIAC_SIGNS[signoNormalizado]) {
         throw new Error('Signo zodiacal no válido');
       }
 
+      // Agregar logs para debugging
+      console.log('Signo normalizado:', signoNormalizado);
+      
       const url = `${this.API_URL}?sign=${signoNormalizado}`;
+      console.log('URL de la petición:', url);
+
       const response = await fetch(url, {
         mode: "cors",
         cache: "no-store",
+        headers: {
+          'Accept': 'application/json'
+        }
       });
       
       if (!response.ok) {
+        const errorData = await response.text();
+        console.error('Respuesta del servidor:', errorData);
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       
