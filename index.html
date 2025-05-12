@@ -9,8 +9,14 @@
 <body>
   <div class="container">
     <h1>¿Cuál es tu horóscopo?</h1>
-    <input type="text" id="fechaInput" placeholder="DD-MM-AAAA" />
-    <button id="consultarBtn" disabled>Consultar</button>
+    <div class="input-group">
+      <label for="fechaInput">Selecciona tu fecha de nacimiento:</label>
+      <input type="date" id="fechaInput" />
+    </div>
+    <button id="consultarBtn" class="btn-consultar" disabled>
+      <span class="btn-text">Consultar Horóscopo</span>
+      <span class="btn-icon">🌟</span>
+    </button>
     <div id="resultado"></div>
   </div>
 

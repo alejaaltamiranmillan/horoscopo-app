@@ -6,14 +6,15 @@ export default class Controller {
     this.model = model;
     this.view = view;
 
-    this.view.fechaInput.addEventListener('input', () => {
+    this.view.fechaInput.addEventListener('change', () => {
       const fechaValida = this.view.validarFecha(this.view.fechaInput.value);
       this.view.consultarBtn.disabled = !fechaValida;
     });
 
     this.view.consultarBtn.addEventListener('click', async () => {
-      const fecha = this.view.fechaInput.value;
-      const signo = this.model.getSigno(fecha);
+      const fechaISO = this.view.fechaInput.value;
+      const fechaFormateada = this.view.formatearFecha(fechaISO);
+      const signo = this.model.getSigno(fechaFormateada);
       const emoji = this.model.getEmoji(signo);
       
       try {

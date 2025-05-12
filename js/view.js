@@ -3,6 +3,15 @@ export default class View {
     this.fechaInput = document.getElementById('fechaInput');
     this.consultarBtn = document.getElementById('consultarBtn');
     this.resultado = document.getElementById('resultado');
+
+    // Establecer fecha máxima como hoy
+    const today = new Date().toISOString().split('T')[0];
+    this.fechaInput.setAttribute('max', today);
+    
+    // Establecer fecha mínima (ejemplo: 100 años atrás)
+    const minDate = new Date();
+    minDate.setFullYear(minDate.getFullYear() - 100);
+    this.fechaInput.setAttribute('min', minDate.toISOString().split('T')[0]);
   }
 
   mostrarHoroscopo(horoscopo, emoji) {
@@ -25,7 +34,14 @@ export default class View {
   }
 
   validarFecha(fecha) {
-    const regex = /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-\d{4}$/;
-    return regex.test(fecha);
+    if (!fecha) return false;
+    const selectedDate = new Date(fecha);
+    const today = new Date();
+    return selectedDate <= today;
+  }
+
+  formatearFecha(fecha) {
+    const [year, month, day] = fecha.split('-');
+    return `${day}-${month}-${year}`;
   }
 }
