@@ -61,42 +61,40 @@ export default class Model {
 
   async getHoroscopo(signo) {
     try {
-      // Normalizar el signo y remover tildes
-      const signoNormalizado = signo.toLowerCase()
-        .trim()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "");
-      
-      // Verificar que el signo sea válido
-      if (!this.ZODIAC_SIGNS[signoNormalizado]) {
-        throw new Error('Signo zodiacal no válido');
-      }
+        // Normalizar el signo y remover tildes
+        const signoNormalizado = signo.toLowerCase()
+            .trim()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, ""); // Elimina tildes y caracteres especiales
 
-      // Agregar logs para debugging
-      console.log('Signo normalizado:', signoNormalizado);
-      
-      const url = `${this.API_URL}?sign=${signoNormalizado}`;
-      console.log('URL de la petición:', url);
-
-      const response = await fetch(url, {
-        mode: "cors",
-        cache: "no-store",
-        headers: {
-          'Accept': 'application/json'
+        // Verificar que el signo sea válido
+        if (!this.ZODIAC_SIGNS[signoNormalizado]) {
+            throw new Error('Signo zodiacal no válido');
         }
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.text();
-        console.error('Respuesta del servidor:', errorData);
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      return data.horoscope;
+
+        // Construir la URL con el signo normalizado
+        const url = `${this.API_URL}?sign=${signoNormalizado}`;
+        console.log('URL de la petición:', url);
+
+        const response = await fetch(url, {
+            mode: "cors",
+            cache: "no-store",
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            const errorData = await response.text();
+            console.error('Respuesta del servidor:', errorData);
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data.horoscope;
     } catch (error) {
-      console.error("Error al obtener el horóscopo:", error);
-      return "Lo siento, no pude obtener tu horóscopo en este momento.";
+        console.error("Error al obtener el horóscopo:", error);
+        return "Lo siento, no pude obtener tu horóscopo en este momento.";
     }
   }
 }
